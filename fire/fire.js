@@ -4,14 +4,14 @@ import * as geofirestore from "geofirestore";
 import "firebase/functions";
 
 const firebaseconfig = {
-  apiKey: "AIzaSyBItrUPM4Awgz9B0MEGydBmbSj0vjQJBmc",
-  authDomain: "unmasked-277008.firebaseapp.com",
-  databaseURL: "https://unmasked-277008.firebaseio.com",
-  projectId: "unmasked-277008",
-  storageBucket: "unmasked-277008.appspot.com",
-  messagingSenderId: "213441425461",
-  appId: "1:213441425461:web:f3ce434cafb3e88b57817c",
-  measurementId: "G-61CQ7LTVTY",
+  apiKey: ,
+  authDomain: ,
+  databaseURL:,
+  projectId: ,
+  storageBucket: ,
+  messagingSenderId: ,
+  appId: ,
+  measurementId: ,
 };
 
 class Fire {
