@@ -1,0 +1,177 @@
+import React from "react";
+import {
+  ActivityIndicator,
+  Button,
+  Clipboard,
+  FlatList,
+  Image,
+  Platform,
+  Share,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { ListItem, SearchBar } from "react-native-elements";
+import { List } from "native-base";
+import { ImagePicker, Permissions } from "expo";
+import Environment from "../../config/environment";
+import * as firebase from "firebase";
+import Fire from "../../fire/fire";
+import { Ionicons } from "react-native-vector-icons";
+import { times } from "lodash";
+//import { Icon } from "react-native-paper/lib/typescript/src/components/Avatar/Avatar";
+
+export default class ManageOrders extends React.Component {
+  state = {
+    loading: false,
+    users: [],
+    refreshing: false,
+  };
+  async componentDidMount() {
+    // this.setState({ loading: true});
+    this.makeRemoteRequest();
+    //await Fire.shared.UpdatingVendorOrderList().then((ref) => {
+    //this.setState({ users: ref, loading: false });
+    //});
+  }
+  makeRemoteRequest = async () => {
+    this.setState({ loading: true });
+    //alert(JSON.stringify(this.state.users));
+    await Fire.shared
+      .UpdatingVendorOrderList({ users: this.state.users })
+      .then((ref) => {
+        //alert(ref);
+        //
+        this.setState({
+          users: ref,
+          loading: false,
+          refreshing: false,
+        });
+      });
+  };
+  handleRefresh = () => {
+    this.setState({ refreshing: true }, () => this.makeRemoteRequest());
+
+    //this.setState({ refreshing: false });
+    //() => this.makeRemoteRequest();
+    //alert(this.state.refreshing);
+  };
+  //Users = () => {
+  // Initial empty array of users
+  //alert(this.setState.users);
+  /*useEffect(() => {
+      const users = Fire.shared.UpdatingVendorOrderList();
+      
+      //
+      //setLoading(false);
+      // Unsubscribe from events when no longer in use
+      // return () => subscriber();
+    });*/
+  //};
+  //<Text>User Name: {item.}</Text>
+
+  renderSeperator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "86%",
+          backgroundColor: "#CED0CE",
+          marginLeft: "14%",
+        }}
+      />
+    );
+  };
+  renderHeader = () => {
+    return <SearchBar placeholder="search UID here..." lightTheme round />;
+  };
+  renderFooter = () => {
+    if (!this.state.loading) return null;
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderTopColor: "CED0CE",
+        }}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  };
+  render() {
+    //const [loading, users] = this.state; // Set loading to true on component mount
+    //const [, setUsers] = this.state;
+    // if (this.state.loading === true) {
+    // return <ActivityIndicator />;
+    //}
+    //if (this.state.loading === false) {
+    return (
+      <View>
+        <View>
+          <FlatList
+            data={this.state.users}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  paddingHorizontal: 32,
+                  paddingVertical: 12,
+                  shadowColor: "rgb(0, 0, 0)",
+                  shadowOffset: {
+                    width: 3,
+                    height: 3,
+                  },
+                  shadowOpacity: 0.5,
+                  shadowRadius: 5,
+                  elevation: 2,
+                  backgroundColor: "white",
+                  // borderBottomWidth: 1,
+                }}
+              >
+                <Text>{`User ID: ${item.CustomerUID}`}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate("ViewIndividualOrder", {
+                      Order: item.Itemlist,
+                    })
+                  }
+                >
+                  <Ionicons
+                    name="md-arrow-forward"
+                    size={24}
+                    color="#D8D9D8"
+                  ></Ionicons>
+                </TouchableOpacity>
+              </View>
+            )}
+            onRefresh={this.handleRefresh}
+            refreshing={this.state.refreshing}
+            ItemSeparatorComponent={this.renderSeperator}
+            ListHeaderComponent={this.renderHeader}
+            ListFooterComponent={this.renderFooter}
+            extraData={this.state.users}
+          />
+        </View>
+      </View>
+    );
+    // }
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  footer: {
+    backgroundColor: "#E9446A",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
